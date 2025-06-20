@@ -107,95 +107,108 @@ def get_student_by_materia(Materia: str):
     return {"error": "Estudiante no encontrado por su materia"}
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Endpoints con parametros de consulta >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# Filtros por columnas (2 parámetros)
-@app.get("/filtro1")
-def filtro1(NombreCompleto: str, Carrera: Optional[str] = None):
-    filtred_dfq = df
-    filtred_dfq = filtred_dfq[filtred_dfq["NombreCompleto"] == NombreCompleto]
-    if Carrera:
-        filtred_dfq = filtred_dfq[filtred_dfq["Carrera"] == Carrera]
+# Filtro por 2 parametros de consulta (query) NombreCompleto y Carrera
+@app.get("/Estudiantes/filtro1")
+def filtro1(Edad: int, Carrera: str):
+    filtred_dfq = df[(df["Edad"] == Edad) & (df["Carrera"] == Carrera)]
     return filtred_dfq.to_dict(orient="records")
 
-@app.get("/filtro2")
-def filtro2(Sexo: str, Edad: Optional[int] = None):
-    filtred_dfq = df[df["Sexo"] == Sexo]
-    if Edad:
-        filtred_dfq = filtred_dfq[filtred_dfq["Edad"] == Edad]
+# Filtro por 2 parametros de consulta (query) Edad y Sexo
+@app.get("/Estudiantes/filtro2")
+def filtro2(Edad: int, Sexo: Optional[str] = None):
+    filtred_dfq = df[df["Edad"] == Edad]
+    if Sexo:
+        filtred_dfq = filtred_dfq[filtred_dfq["Sexo"] == Sexo]
     return filtred_dfq.to_dict(orient="records")
 
-# Filtro con 2 parámetros (uno opcional)
-@app.get("/filtro3")
-def filtro3(Facultad: str, AñoExamen: Optional[int] = None):
-    filtred_dfq = df[df["Facultad"] == Facultad]
-    if AñoExamen:
-        filtred_dfq = filtred_dfq[filtred_dfq["AñoExamen"] == AñoExamen]
+# Filtro por 3 parametros de consulta (query) Carrera, Sexo y AñoExamen
+@app.get("/Estudiantes/filtro3")
+def filtro3(Carrera: str, Sexo: str, AñoExamen: int):
+    filtred_dfq = df[(df["Carrera"] == Carrera) & (df["Sexo"] == Sexo) & (df["AñoExamen"] == AñoExamen)]
     return filtred_dfq.to_dict(orient="records")
 
-@app.get("/filtro4")
-def filtro4(Matricula: str, Materia: Optional[str] = None):
-    filtred_dfq = df[df["Matricula"] == Matricula]
+# Filtro por 3 parametros de consulta (query)Materia, Edad y Compañero
+@app.get("/Estudiantes/filtro4")
+def filtro4(Materia: str, Edad: int, Compañero: Optional[bool] = None):
+    filtred_dfq = df[df["Materia"] == Materia]
+    if Compañero is not None:
+        filtred_dfq = filtred_dfq[filtred_dfq["Compañero"] == Compañero]
+    filtred_dfq = filtred_dfq[filtred_dfq["Edad"] == Edad]
+    return filtred_dfq.to_dict(orient="records")
+
+# Filtro por 4 parametros de consulta (query) Edad, Carrera, Compañero y Materia
+@app.get("/Estudiantes/filtro5")
+def filtro5(Edad: int, Carrera: str, Compañero: bool, Materia: str):
+    filtred_dfq = df[(df["Edad"] == Edad) & (df["Carrera"] == Carrera) & (df["Compañero"] == Compañero) & (df["Materia"] == Materia)]
+    return filtred_dfq.to_dict(orient="records")
+
+@app.get("/Estudiantes/filtro6")
+def filtro6(Edad: int, Carrera: str, Compañero: bool, Sexo: Optional[str] = None):
+    filtred_dfq = df[(df["Edad"] == Edad) & (df["Carrera"] == Carrera) & (df["Compañero"] == Compañero)]
+    if Sexo:
+        filtred_dfq = filtred_dfq[filtred_dfq["Sexo"] == Sexo]
+    return filtred_dfq.to_dict(orient="records")
+
+# Filtro por 5 parametros de consulta (query) Matricula, Edad, Carrera, Compañero y Materia
+@app.get("/Estudiantes/filtro7")
+def filtro7(Matricula: int, Edad: int, Carrera: str, Compañero: bool, Materia: str):
+    filtred_dfq = df[(df["Matricula"] == Matricula) & (df["Edad"] == Edad) & (df["Carrera"] == Carrera) & (df["Compañero"] == Compañero) & (df["Materia"] == Materia)]
+    return filtred_dfq.to_dict(orient="records")
+
+# Filtro por 5 parametros de consulta (query) NombreCompleto, Edad, Sexo, Compañero y Materia
+@app.get("/Estudiantes/filtro8")
+def filtro8(NombreCompleto: str, Edad: int, Sexo: Optional[str] = None, Compañero: bool = None, Materia: str = None):
+    filtred_dfq = df[(df["NombreCompleto"] == NombreCompleto) & (df["Edad"] == Edad)]
+    if Sexo:
+        filtred_dfq = filtred_dfq[filtred_dfq["Sexo"] == Sexo]
+    if Compañero is not None:
+        filtred_dfq = filtred_dfq[filtred_dfq["Compañero"] == Compañero]
     if Materia:
         filtred_dfq = filtred_dfq[filtred_dfq["Materia"] == Materia]
     return filtred_dfq.to_dict(orient="records")
 
-# Filtro con 2 parámetros (ambos opcionales)
-@app.get("/filtro5")
-def filtro5(NombreCompleto: Optional[str] = None, Compañero: Optional[str] = None):
-    filtred_dfq = df
-    if NombreCompleto:
-        filtred_dfq = filtred_dfq[filtred_dfq["NombreCompleto"] == NombreCompleto]
-    if Compañero:
-        filtred_dfq = filtred_dfq[filtred_dfq["Compañero"] == Compañero]
-    return filtred_dfq.to_dict(orient="records")
-
-@app.get("/filtro6")
-def filtro6(Correo: Optional[str] = None, Edad: Optional[int] = None):
-    filtred_dfq = df
-    if Correo:
-        filtred_dfq = filtred_dfq[filtred_dfq["Correo"] == Correo]
-    if Edad:
-        filtred_dfq = filtred_dfq[filtred_dfq["Edad"] == Edad]
-    return filtred_dfq.to_dict(orient="records")
-
-# Filtro con 3 parámetros
-@app.get("/filtro7")
-def filtro7(Carrera: str, Sexo: Optional[str] = None, Materia: Optional[str] = None):
-    filtred_dfq = df[df["Carrera"] == Carrera]
+# Filtro por 6 parametros de consulta (query) NombreCompleto, Edad, Carrera, Sexo, Compañero y SoloCampos (Retorna solo los campos especificados)
+@app.get("/Estudiantes/filtro9")
+def filtro9(NombreCompleto: str, Edad: int, Carrera: str, Sexo: Optional[str] = None, Compañero: Optional[bool] = None, SoloCampos: bool = False):
+    filtred_dfq = df[(df["NombreCompleto"] == NombreCompleto) & (df["Edad"] == Edad) & (df["Carrera"] == Carrera)]
     if Sexo:
         filtred_dfq = filtred_dfq[filtred_dfq["Sexo"] == Sexo]
-    if Materia:
-        filtred_dfq = filtred_dfq[filtred_dfq["Materia"] == Materia]
-    return filtred_dfq.to_dict(orient="records")
-
-@app.get("/filtro8")
-def filtro8(NombreCompleto: Optional[str] = None, Facultad: Optional[str] = None, AñoExamen: Optional[int] = None):
-    filtred_dfq = df
-    if NombreCompleto:
-        filtred_dfq = filtred_dfq[filtred_dfq["NombreCompleto"] == NombreCompleto]
-    if Facultad:
-        filtred_dfq = filtred_dfq[filtred_dfq["Facultad"] == Facultad]
-    if AñoExamen:
-        filtred_dfq = filtred_dfq[filtred_dfq["AñoExamen"] == AñoExamen]
-    return filtred_dfq.to_dict(orient="records")
-
-# Filtro con 3 parámetros (uno obligatorio)
-@app.get("/filtro9")
-def filtro9(Matricula: str, Compañero: Optional[str] = None, Edad: Optional[int] = None):
-    filtred_dfq = df[df["Matricula"] == Matricula]
-    if Compañero:
+    if Compañero is not None:
         filtred_dfq = filtred_dfq[filtred_dfq["Compañero"] == Compañero]
-    if Edad:
-        filtred_dfq = filtred_dfq[filtred_dfq["Edad"] == Edad]
-    return filtred_dfq.to_dict(orient="records")
-
-# Filtro con 4 parámetros (uno obligatorio)
-@app.get("/filtro10")
-def filtro10(Carrera: str, Facultad: Optional[str] = None, Sexo: Optional[str] = None, AñoExamen: Optional[int] = None):
-    filtred_dfq = df[df["Carrera"] == Carrera]
-    if Facultad:
-        filtred_dfq = filtred_dfq[filtred_dfq["Facultad"] == Facultad]
-    if Sexo:
-        filtred_dfq = filtred_dfq[filtred_dfq["Sexo"] == Sexo]
-    if AñoExamen:
-        filtred_dfq = filtred_dfq[filtred_dfq["AñoExamen"] == AñoExamen]
+    
+    if SoloCampos:
+        return filtred_dfq[["NombreCompleto", "Edad", "Carrera", "Sexo", "Compañero"]].to_dict(orient="records")
+    else:
+        return filtred_dfq.to_dict(orient="records")
+    
+# Filtro por 6 parametros de consulta (query) Edad, Carrera, Sexo, AñoExamen, Contar(Solo devolver cantidad de registros en los campos) y SoloCampos (Retorna solo los campos especificados)
+@app.get("/Estudiantes/filtro10")
+def filtro10(Edad: int, Carrera: str, Sexo: str, AñoExamen: int, Contar: bool = False, SoloCampos: bool = False):
+    filtred_dfq = df[(df["Edad"] == Edad) & (df["Carrera"] == Carrera)]
+    filtred_dfq = filtred_dfq[filtred_dfq["Sexo"] == Sexo]
+    filtred_dfq = filtred_dfq[filtred_dfq["AñoExamen"] == AñoExamen]
+        
+    if Contar and SoloCampos:
+        result = list()
+        result.append(filtred_dfq["Edad"].value_counts().to_dict())
+        result.append(filtred_dfq["Carrera"].value_counts().to_dict())
+        result.append(filtred_dfq["Sexo"].value_counts().to_dict())
+        result.append(filtred_dfq["AñoExamen"].value_counts().to_dict())
+        return result
+    elif Contar:
+        result = list()
+        result.append(filtred_dfq["NombreCompleto"].value_counts().to_dict())
+        result.append(filtred_dfq["Matricula"].value_counts().to_dict())
+        result.append(filtred_dfq["Edad"].value_counts().to_dict())
+        result.append(filtred_dfq["Carrera"].value_counts().to_dict())
+        result.append(filtred_dfq["Sexo"].value_counts().to_dict())
+        result.append(filtred_dfq["Correo"].value_counts().to_dict())
+        result.append(filtred_dfq["Facultad"].value_counts().to_dict())
+        result.append(filtred_dfq["AñoExamen"].value_counts().to_dict())
+        result.append(filtred_dfq["Compañero"].value_counts().to_dict())
+        result.append(filtred_dfq["Materia"].value_counts().to_dict())
+        return result
+    elif SoloCampos:
+        return filtred_dfq[["Edad", "Carrera", "Sexo", "AñoExamen"]].to_dict(orient="records")
+    
     return filtred_dfq.to_dict(orient="records")
